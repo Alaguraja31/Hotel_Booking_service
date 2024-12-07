@@ -18,8 +18,9 @@ const userLogin = (login) => {
     const userDetails = dbContent.users.find(user => user.email === login.email && user.password === login.password);
 
     if(userDetails){
-      userDetails.login = true;
-      dbContent.currentUser = userDetails.name;
+      const userIndex = dbContent.users.findIndex(user => user.email === login.email && user.password === login.password);
+      dbContent.users[userIndex].login = true;
+      dbContent.currentUser = { name: userDetails.name, email: userDetails.mail}
       fs.writeFileSync(dbPath, JSON.stringify(dbContent, null, 2), 'utf8');
       return { success: true, message: 'Successfully login in' };
     }
@@ -72,6 +73,24 @@ const getUserDetails = () => {
 };
 
 
+const getUserLogout = (login) => {
+  try{
+    const dbFile = fs.readFileSync(dbPath, 'utf8');
+    const dbContent = JSON.parse(dbFile);
+
+    const userIndex = dbContent.users.findIndex(user => user.email === login.email && user.password === login.password);
+
+    dbContent.users[userIndex].login = false;
+    dbContent.currentUser = null;
+    fs.writeFileSync(dbPath, JSON.stringify(dbContent, null, 2), 'utf8');
+    return { success: true, message: "Log out!" };
+  } catch(error){
+    console.error('Error reading db.json:', error);
+    return { success: false, message: 'Error reading db.json' };
+  }
+
+}
+
 app.post('/userLogin', (req, res) => {
   const user = req.body;
 
@@ -87,6 +106,11 @@ app.post('/userRegistration', (req, res) => {
   res.status(result.success ? 200 : 500).json(result);
 });
 
+app.get('/getUserLogout', (req, res) => {
+  // Call modifyDbJson function
+  const result = getUserLogout();
+  res.status(result.success ? 200 : 500).json(result);
+});
 
 app.get('/getUserDetails', (req, res) => {
   // Call modifyDbJson function
