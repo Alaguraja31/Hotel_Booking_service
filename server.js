@@ -9,16 +9,46 @@ const dbPath = path.join(__dirname, 'db.json');
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
-// Function to modify db.json
-const modifyUserDetails = (newData) => {
+// login
+const userLogin = (login) => {
   try {
     const dbFile = fs.readFileSync(dbPath, 'utf8');
     const dbContent = JSON.parse(dbFile);
 
-    // Modify the data (e.g., add new item)
+    const userDetails = dbContent.users.find(user => user.email === login.email && user.password === login.password);
+
+    if(userDetails){
+      userDetails.login = true;
+      dbContent.currentUser = userDetails.name;
+      fs.writeFileSync(dbPath, JSON.stringify(dbContent, null, 2), 'utf8');
+      return { success: true, message: 'Successfully login in' };
+    }
+
+    const isUsername = dbContent.users.some(user => user.email !== login.email)
+    const isPassword =  dbContent.users.some(user => user.password !== login.password);
+
+    return { success: false, message: `Your ${isUsername && "User name"} ${isPassword && "Password"} is missmatching!` };
+    
+  } catch (error) {
+    console.error('Error for login:', error);
+    return { success: false, message: 'Login Failed' };
+  }
+};
+
+//user Registration
+const userRegistration = (newUser) => {
+  try {
+    const dbFile = fs.readFileSync(dbPath, 'utf8');
+    const dbContent = JSON.parse(dbFile);
+
+    const isUserAlready = dbContent.users.some(user => user.email === newUser.email);
+
+    if(isUserAlready){
+      return { success: true, message: 'Your email id is exist!' };
+    }
+
     dbContent.users.push(newData);
 
-    // Write updated content back to db.json
     fs.writeFileSync(dbPath, JSON.stringify(dbContent, null, 2), 'utf8');
     console.log('db.json updated successfully!');
     return { success: true, message: 'Data added successfully', data: newData };
@@ -28,33 +58,40 @@ const modifyUserDetails = (newData) => {
   }
 };
 
-// Function to modify db.json
-const getDbJson = () => {
+// get user details
+const getUserDetails = () => {
   try {
     // Read the db.json file
     const dbFile = fs.readFileSync(dbPath, 'utf8');
     const dbContent = JSON.parse(dbFile);
-    return { success: true, data: dbContent };
+    return { success: true, data: dbContent.user };
   } catch (error) {
     console.error('Error reading db.json:', error);
     return { success: false, message: 'Error reading db.json' };
   }
 };
 
-// API endpoint to handle db modification
-app.post('/add-item', (req, res) => {
-  const newItem = req.body;
 
-  // Call modifyDbJson function
-  const result = modifyUserDetails(newItem);
+app.post('/userLogin', (req, res) => {
+  const user = req.body;
+
+  const result = userLogin(user);
   res.status(result.success ? 200 : 500).json(result);
 });
 
-// API endpoint to handle db modification
-app.get('/items', (req, res) => {
+
+app.post('/userRegistration', (req, res) => {
+  const newItem = req.body;
+
+  const result = userRegistration(newItem);
+  res.status(result.success ? 200 : 500).json(result);
+});
+
+
+app.get('/getUserDetails', (req, res) => {
 
   // Call modifyDbJson function
-  const result = getDbJson();
+  const result = getUserDetails();
   res.status(result.success ? 200 : 500).json(result);
 });
 

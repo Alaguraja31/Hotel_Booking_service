@@ -2,17 +2,20 @@
   "users": [
     {
       "id": 1,
-      "name": "Naresh Kumar H",
-      "email": "nareshkumarh@live.com",
-      "password": "pass123",
-      "role": "USER"
+      "name": "Alaguraja B",
+      "email": "test@gmail.com",
+      "password": "12345",
+      "role": "USER",
+      "login": false,
+      "bookingDetails": {}
     },
     {
       "id": 2,
       "name": "Tushant",
       "email": "tushant@gmail.com",
       "password": "pass123",
-      "role": "ADMIN"
+      "role": "ADMIN",
+      "login": false
     }
   ],
   "floor": {
@@ -20,5 +23,6 @@
       "1A",
       "1B"
     ]
-  }
+  },
+  "currentUser": "Test"
 }
