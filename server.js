@@ -91,7 +91,7 @@ app.post('/userRegistration', (req, res) => {
 app.get('/getUserDetails', (req, res) => {
   // Call modifyDbJson function
   const result = getUserDetails();
-  res.status(result.success ? 200 : 500).json(dbContent);
+  res.status(result.success ? 200 : 500).json(result);
 });
 
 // Start the server
