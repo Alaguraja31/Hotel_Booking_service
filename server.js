@@ -64,7 +64,7 @@ const getUserDetails = () => {
     // Read the db.json file
     const dbFile = fs.readFileSync(dbPath, 'utf8');
     const dbContent = JSON.parse(dbFile);
-    return { success: true, data: dbContent.user };
+    return { success: true, data: dbContent };
   } catch (error) {
     console.error('Error reading db.json:', error);
     return { success: false, message: 'Error reading db.json' };
@@ -89,10 +89,9 @@ app.post('/userRegistration', (req, res) => {
 
 
 app.get('/getUserDetails', (req, res) => {
-
   // Call modifyDbJson function
   const result = getUserDetails();
-  res.status(result.success ? 200 : 500).json(result);
+  res.status(result.success ? 200 : 500).json(dbContent);
 });
 
 // Start the server
