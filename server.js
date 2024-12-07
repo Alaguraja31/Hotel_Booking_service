@@ -108,7 +108,8 @@ app.post('/userRegistration', (req, res) => {
 
 app.post('/getUserLogout', (req, res) => {
   // Call modifyDbJson function
-  const result = getUserLogout();
+  const newItem = req.body;
+  const result = getUserLogout(newItem);
   res.status(result.success ? 200 : 500).json(result);
 });
 
