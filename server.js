@@ -20,7 +20,7 @@ const userLogin = (login) => {
     if(userDetails){
       const userIndex = dbContent.users.findIndex(user => user.email === login.email && user.password === login.password);
       dbContent.users[userIndex].login = true;
-      dbContent.currentUser = { name: userDetails.name, email: userDetails.mail}
+      dbContent.currentUser = { name: userDetails.name, email: userDetails.email}
       fs.writeFileSync(dbPath, JSON.stringify(dbContent, null, 2), 'utf8');
       return { success: true, message: 'Successfully login in' };
     }
@@ -106,7 +106,7 @@ app.post('/userRegistration', (req, res) => {
   res.status(result.success ? 200 : 500).json(result);
 });
 
-app.get('/getUserLogout', (req, res) => {
+app.post('/getUserLogout', (req, res) => {
   // Call modifyDbJson function
   const result = getUserLogout();
   res.status(result.success ? 200 : 500).json(result);
