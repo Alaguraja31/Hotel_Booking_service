@@ -6,6 +6,9 @@
         { "id": 2, "name":"Tushant", "email":"tushant@gmail.com", 
             "password":"pass123", "role": "ADMIN"
         }
-    ]
+    ],
+    "floor":{
+        "1floor": ["1A", "1B"]
+    }
     
 }
